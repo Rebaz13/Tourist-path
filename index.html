@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+
+<head>
+
+
+
+
+    <style>
+    
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+  *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  body{
+    background: #644bff;
+    padding: 0 20px;
+  }
+  
+  ::selection{
+    color: #fff;
+    background: #664AFF;
+  }
+  
+  .wrapper{
+    max-width: 450px;
+    margin: 150px auto;
+  }
+  
+  .wrapper .search-input{
+    background: #fff;
+    width: 100%;
+    border-radius: 5px;
+    position: relative;
+    box-shadow: 0px 1px 5px 3px rgba(0,0,0,0.12);
+  }
+  
+  .search-input input{
+    height: 55px;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 0 60px 0 20px;
+    font-size: 18px;
+    box-shadow: 0px 1px 5px rgba(0,0,0,0.1);
+  }
+  
+  .search-input.active input{
+    border-radius: 5px 5px 0 0;
+  }
+  
+  .search-input .autocom-box{
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  
+  .search-input.active .autocom-box{
+    padding: 10px 8px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .autocom-box li{
+    list-style: none;
+    padding: 8px 12px;
+    display: none;
+    width: 100%;
+    cursor: default;
+    border-radius: 3px;
+  }
+  
+  .search-input.active .autocom-box li{
+    display: block;
+  }
+  .autocom-box li:hover{
+    background: #efefef;
+  }
+  
+  .search-input .icon{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 55px;
+    width: 55px;
+    text-align: center;
+    line-height: 55px;
+    font-size: 20px;
+    color: #644bff;
+    cursor: pointer;
+  }
+      </style>
+      <meta charset="utf-8">
+      <title>Autocomplete Search Box | CodingNepal</title>
+      <link rel="stylesheet" href="style.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    </head>
+    <body>
+      <div class="wrapper">
+        <div class="search-input">
+          <a href="" target="_blank" hidden></a>
+          <input type="text" placeholder="Type to search..">
+          <div class="autocom-box">
+            <!-- here list are inserted from javascript -->
+          </div>
+          <div class="icon"><i class="fas fa-search"></i></div>
+        </div>
+      </div>
+  
+      <script>
+        let suggestions = [
+      "Hawler Cetidal",
+      "Saholaka",
+      "Ahmad Awa",
+      "Bexal Resort",
+      "Sherwana Castle",
+      "Sami Abdulrahman Park",
+      "Shanadar Park",
+      "Jalil khayat Mosque",
+      "Slemani Museum",
+      "Hallgord Mountain",
+      "Korek Mountain",
+      "Shanadar Kave",
+      "Delal bridge",
+      "Majdi Land ",
+      "Duhok Zoo",
+      "Azadi Park",
+      "Sakura Park",
+      "Halmat Cave",
+      "Jame Rezan",
+  ];
+  
+  
+  
+  
+  ///////
+  ////script
+  
+  // getting all required elements
+  const searchWrapper = document.querySelector(".search-input");
+  const inputBox = searchWrapper.querySelector("input");
+  const suggBox = searchWrapper.querySelector(".autocom-box");
+  const icon = searchWrapper.querySelector(".icon");
+  let linkTag = searchWrapper.querySelector("a");
+  let webLink;
+  
+  // if user press any key and release
+  inputBox.onkeyup = (e)=>{
+      let userData = e.target.value; //user enetered data
+      let emptyArray = [];
+      if(userData){
+          icon.onclick = ()=>{
+              webLink = `https://www.google.com/search?q=${userData}`;
+              linkTag.setAttribute("href", webLink);
+              linkTag.click();
+          }
+          emptyArray = suggestions.filter((data)=>{
+              //filtering array value and user characters to lowercase and return only those words which are start with user enetered chars
+              return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+          });
+          emptyArray = emptyArray.map((data)=>{
+              // passing return data inside li tag
+              return data = `<li>${data}</li>`;
+          });
+          searchWrapper.classList.add("active"); //show autocomplete box
+          showSuggestions(emptyArray);
+          let allList = suggBox.querySelectorAll("li");
+          for (let i = 0; i < allList.length; i++) {
+              //adding onclick attribute in all li tag
+              allList[i].setAttribute("onclick", "select(this)");
+          }
+      }else{
+          searchWrapper.classList.remove("active"); //hide autocomplete box
+      }
+  }
+  
+  function select(element){
+      let selectData = element.textContent;
+      inputBox.value = selectData;
+      icon.onclick = ()=>{
+          webLink = `https://www.google.com/search?q=${selectData}`;
+          linkTag.setAttribute("href", webLink);
+          linkTag.click();
+      }
+      searchWrapper.classList.remove("active");
+  }
+  
+  function showSuggestions(list){
+      let listData;
+      if(!list.length){
+          userValue = inputBox.value;
+          listData = `<li>${userValue}</li>`;
+      }else{
+        listData = list.join('');
+      }
+      suggBox.innerHTML = listData;
+  }
+  
+  
+      </script>
+  
+    </body>
+  </html>
+  
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+		<title>Kurdistan Tourist System</title>
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.css" rel="stylesheet">
+        <!-- Typography CSS -->
+		<link href="css/typography.css" rel="stylesheet">	
+        <!-- DL Menu CSS -->
+        <link href="js/dl-menu/component.css" rel="stylesheet">
+        <!-- Date And Time Picker CSS -->
+        <link rel="stylesheet" href="css/datetimepicker.css">
+        <!-- FontAwesome Icon CSS -->
+        <link href="css/font-awesome.css" rel="stylesheet">
+        <!-- Svg Icon CSS -->
+        <link href="css/svg.css" rel="stylesheet">
+        <!-- Slick Slider CSS -->
+        <link href="css/slick.css" rel="stylesheet">
+        <!-- Widget CSS -->
+        <link href="css/widget.css" rel="stylesheet">
+        <!-- Short Code CSS -->
+        <link href="css/shortcode.css" rel="stylesheet">
+        <!-- Custom Style CSS -->
+		<link href="style.css" rel="stylesheet">
+        <!-- Color CSS -->
+        <link href="css/color.css" rel="stylesheet">
+        <!-- Responsive CSS -->
+        <link href="css/responsive.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="iqoniq_wrapper">
+			<header class="mg_header_1">
+				<div class="mg_nav_wrapper">
+					<div class="mg_logo">
+                        <a href="#"><img src="images/location.png" alt=""/></a>
+                    </div>
+                    <div class="mg_nav">
+                        <ul class="mg_navigation">
+                            <li><a href=" ">About Kurdistan</a></li>
+                            <li><a href="top-destinations.html">Destinations</a></li>
+                            <li>
+                                <a href="#">Where to stay</a>
+                                <ul class="children">
+                               
+                                    <li><a href="our-rooms.php">Sulaimaniyah Hotels</a></li>
+                                
+                                </ul>
+                            </li>
+                            
+                            <li>
+                                <a href="about-us.html">contact us</a>
+                                
+                            </li>
+                            <li>
+                                <a href="login.php">Admin Login</a>
+                                
+                            </li>
+                        </ul>
+                   
+                        
+                    </div>
+				</div>
+			</header>
+            <div class="mg_hotel_banner">
+                <div class="mg_slider1">
+                    
+                    
+                    <div>
+                        <figure>
+                            <img src="extra-images/hawler.jpg" alt=""/>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+             <section class="mg_travelplan">
+                    <div class="container">
+                        <div class="mg_hotel_hd1 white">
+                            <h6>About Kurdistan</h6>
+                            <h4>information in general</h4>
+                        </div>
+                        <div class="mg_plan_caption">
+                            <p>Kurdistan literally translates to "Land of the Kurds." It is referred to as the Kurdistan Region in the Iraqi Constitution. The Kurdistan Regional Government is the official name of the government (often abbreviated as the KRG). The Kurdistan Regional Government (KRG) is sometimes known as Kurdistana Bashur or Bashuri Kurdistan (South Kurdistan), due to its geographical location within the wider Kurdistan area. Iraqi Kurdistan, often known as the Kurdistan Area, is a self-governing region in Iraq. It is bordered on the east by Iran, on the north by Turkey, on the west by Syria, and on the south by the remainder of Iraq. Erbil, commonly known as Hawler, is the regional capital. The Kurdistan Regional Government is in charge of the region..</p>
+                            <a class="mg_btn1" href="#">Learn more about the Kurdistan region.</a>
+                        </div>
+                    </div>
+                </section>
+            <div class="iqoniq_contant_wrapper">
+                <section>
+                    <div class="container">
+                        <div class="mg_hotel_hd1">
+                            <h6>What are you in the Mood for.?</h6>
+                            <h4>THE BEST PLACES TO VISIT IN KURDISTAN</h4>
+                        </div>
+                        <div class="mg_hotel_destination_tab">
+                            <ul class="mg_hotel_nav2" role="tablist">
+                                <li role="presentation" class="active"><a href="#worldwide" aria-controls="worldwide" role="tab" data-toggle="tab">Hawler</a></li>
+                                <li role="presentation"><a href="#usa" aria-controls="usa" role="tab" data-toggle="tab">Sulaimaniyah</a></li>
+                                <li role="presentation"><a href="#mexico" aria-controls="mexico" role="tab" data-toggle="tab">Duhok</a></li>
+                                <li role="presentation"><a href="#europe" aria-controls="europe" role="tab" data-toggle="tab">Halabja & Kalar</a></li>
+                                
+                                
+                            </ul>
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="worldwide">
+                                    <div class="mg_hotel_destination_wrapper">
+                                        <div class="row">
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Qala.png" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="view.html">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Hawler citadel</a></h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Barzan.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="view-1.html">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="view-1.html">Barzan</a></h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Gomiifelaw.png" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="">Balakayati</a></h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Korek.png" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="">Rawanduz</a></h5>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Shaqlawa.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="">Shaqlawa</a></h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                       
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Warte.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Warte</a></h5>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="usa">
+                                    <div class="mg_hotel_destination_wrapper">
+                                        <div class="row">
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/chaviland.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Chaviland</a></h5>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Sarchnar.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view </a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Sarchnar</a></h5>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                       
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Dukan.png" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="view-1.html">view </a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Dukan</a></h5>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Chamirezan.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Chami Razan</a></h5>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/darbandikan.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">darbandikan</a></h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Azmar.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Azmar</a></h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="mexico">
+                                    <div class="mg_hotel_destination_wrapper">
+                                        <div class="row">
+                                            <!-- Hotel Destination Start -->
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Amedi.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Amedi</a></h5>
+                                                        </div>
+                                                     
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Solav.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Solav</a></h5>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/zaxo.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view deal</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Zakho</a></h5>
+                                                        </div>
+                                                     
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Cree.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view </a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Cree Sperki</a></h5>
+                                                        </div>
+                                                     
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/GaliChamanke.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Gali Chamanke</a></h5>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/SHARANISHWATERFALL.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Sharanish Waterfall</a></h5>
+                                                        </div>
+                                                     
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                          
+                                <div role="tabpanel" class="tab-pane" id="europe">
+                                    <div class="mg_hotel_destination_wrapper">
+                                        <div class="row">
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Chawg.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Chawg</a></h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Ahmadawa.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Ahmed Awa</a></h5>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Awesar.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Tawella Awesar</a></h5>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                       
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Byara.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Byara</a></h5>
+                                                        </div>
+                                                    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Sherwana.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Qalay Sherwana</a></h5>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                       
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="mg_hotel_destination fancy-overlay">
+                                                    <figure>
+                                                        <img src="extra-images/Sirwan.jpg" alt=""/>
+                                                        <figcaption>
+                                                            <a class="view_btn" href="#">view</a>
+                                                        </figcaption>
+                                                    </figure>
+                                                    <div class="text">
+                                                        <div class="mg_destination_hd">
+                                                            <h5><a href="#">Sirwan lake</a></h5>
+                                                        </div>
+                                                     
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+
+                <section>
+                    <div class="container">
+                        <div class="mg_hotel_hd1">
+                            <h6>  </h6>
+                            <h4> learn more about Kurdistan</h4>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="mg_blog_medium fancy-overlay">
+                                    <h6><a href="#">History</a></h6>
+                                    <figure>
+                                        <a href="#"><img src="extra-images/H.png" alt=""></a>
+                                    </figure>
+                                    <div class="text">
+                                    	 <ul class="blog-meta-list">
+                                            <li><a href="#"><span>Some key events since the early 20th century.</span></a></li>
+                                        </ul>
+                                        <div class="clear"></div>
+                                        <p>Some key events since the early 20th century.
+
+1918: Sheikh Mahmoud Barzinji becomes governor of Sulaimaniya under British rule. He and other Kurdish leaders who want Kurdistan to be ruled independently of Baghdad rebel against the British. He is defeated a year later.</p>
+                                        <a class="mg_readmore" href="#"></a>
+                                    </div>
+                                </div>
+                            </div>
+                          
+                            <div class="col-md-4 col-sm-6">
+                                <div class="mg_blog_medium fancy-overlay">
+                                    <h6><a href="#">GEOGRAPHY</a></h6>
+                                    <figure>
+                                        <a href="#"><img src="extra-images/G.jpg" alt=""></a>
+                                    </figure>
+                                    <div class="text">
+                                        <ul class="blog-meta-list">
+                                <li><a href="#"><span>Area: 40,643 km² </span></a></li>
+                             <li><a href="#"><span>Population: 3,757,058</span></a></li>
+                                        </ul>
+                                        <div class="clear"></div>
+                                        <p>The Kurdistan Region comprises parts of the three governorates of Erbil, Slemani and Duhok. It borders Syria to the West (Rojava), Iran to the East (Rojhalat), and Turkey (Bakur) lying to the North where fertile plains meet the Zagros Mountains.</p>
+                                        <a class="mg_readmore" href="#"></a>
+                                    </div>
+                                </div>
+                            </div>
+                          
+                            <div class="col-md-4 hidden-sm">
+                                <div class="mg_blog_medium fancy-overlay">
+                                    <h6><a href="#">Land & Environment</a></h6>
+                                    <figure>
+                                        <a href="#"><img src="extra-images/land1.jpg" alt=""></a>
+                                    </figure>
+                                    <div class="text">
+                                        <ul class="blog-meta-list">
+                                            <li><a href="#"><span>Agriculture</span></a></li>
+                                            <li><a href="#"><span>Industrial</span></a></li>
+                                        </ul>
+                                        <div class="clear"></div>
+                                        <p>Visiting Kurdistan for the first time you will notice that its most prominent geophysical feature is mountains. There is a saying among Kurds: ‘no friends but the mountains’ referring to oppressing states/neighbors and dictators surrounding the region.</p>
+                                        <a class="mg_readmore" href="#"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+               
+            </div>
+            <footer class="mg_footer1">
+                <div class="container">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="widget widget_text">
+                            <div class="logo">
+                                <a href="#"><img src="images/location.png" alt=""/></a>
+                            </div>
+                            <div class="text">
+                              
+                       <div class="mg_contact"><i class="fa fa-phone"></i><span>+9647500000000</span></div>
+                       <div class="mg_contact"><i class="fa fa-envelope-o"></i><span>ktsinfo@gmail.com</span></div>
+                            </div>
+                            <ul class="mg_social">
+                               <li><a href="#"><i class="fa fa-facebook"></i></a></li> 
+                               <li><a href="#"><i class="fa fa-twitter"></i></a></li> 
+                               <li><a href="#"><i class="fa fa-linkedin"></i></a></li> 
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="widget widget_archives">
+                            
+                        </div>
+                    </div>  
+                    
+                    <div class="col-md-3 col-sm-6">
+                        <div class="widget widget_search">
+                            <h6 class="widget-title">keep continue with KTS staff</h6>
+                            <form>
+                                <div class="mg_input_1">
+                                   <input type="text" placeholder="Your E-mail ID">
+                                </div>
+                                <div class="mg_input_1">
+                                    <textarea placeholder="Your Message"></textarea>
+                                </div>
+                                <p><input type="button" value="Send message"></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            
+            
+            
+            
+		</div>
+    
+    	<script src="js/jquery.js"></script>
+    	
+    	<script src="js/bootstrap.js"></script>
+       
+        <script src="js/slick.min.js"></script>
+       
+        <script src="js/masonry.min.js"></script>
+        
+        <script src="js/scripts.js"></script>
+        <script src="js/jquery.datetimepicker.full.js"></script>
+     
+        <script src="js/dl-menu/modernizr.custom.js"></script>
+        <script src="js/dl-menu/jquery.dlmenu.js"></script>
+    
+    	<script src="js/custom.js"></script>
+	</body>
+
+
+</html>
